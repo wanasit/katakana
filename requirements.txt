@@ -2,3 +2,6 @@ keras
 pandas
 numpy
 h5py
+# ===== hosting demo on heroku =====
+gunicorn
+flask

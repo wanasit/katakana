@@ -1,5 +1,5 @@
 from __future__ import print_function
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, redirect
 
 from katakana import model
 
@@ -29,5 +29,9 @@ def do_katakana():
 def do_static(path):
     return send_from_directory('web', path)
 
+@app.route('/')
+def hello():
+    return redirect("/index.html")
+
 if __name__ == '__main__':
-    app.run(debug=False, host="0.0.0.0", port=8080)
+    app.run(debug=True)
