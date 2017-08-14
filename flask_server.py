@@ -9,10 +9,10 @@ print('Loaded model')
 print('Input dict size', len(input_encoding))
 print('Output dict size', len(output_encoding))
 
-print('test "hello world"', model.to_katakana('hello world', keras_model, input_encoding, output_decoding))
-print('test "john doe"', model.to_katakana('john doe', keras_model, input_encoding, output_decoding))
-print('test "john"', model.to_katakana('john', keras_model, input_encoding, output_decoding))
-print('test "james"', model.to_katakana('james', keras_model, input_encoding, output_decoding))
+print('test "hello world"', model.to_katakana('hello world', keras_model, input_encoding, output_decoding).encode('utf8'))
+print('test "john doe"', model.to_katakana('john doe', keras_model, input_encoding, output_decoding).encode('utf8'))
+print('test "john"', model.to_katakana('john', keras_model, input_encoding, output_decoding).encode('utf8'))
+print('test "james"', model.to_katakana('james', keras_model, input_encoding, output_decoding).encode('utf8'))
 
 app = Flask(__name__)
 
