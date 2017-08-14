@@ -2,6 +2,7 @@ keras
 pandas
 numpy
 h5py
+tensorflow
 # ===== hosting demo on heroku =====
 gunicorn
 flask
