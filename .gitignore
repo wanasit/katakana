@@ -77,3 +77,4 @@ ENV/
 /site
 # mypy
 .mypy_cache/
+.idea
