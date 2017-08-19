@@ -41,12 +41,13 @@ def save(model, input_encoding, input_decoding, output_encoding, output_decoding
         shutil.rmtree(save_dir)
 
     os.mkdir(save_dir)
-    json.dump(model.to_json(), open(save_dir + '/model.json', 'w'))
     json.dump(input_encoding, open(save_dir + '/input_encoding.json', 'w'))
     json.dump(input_decoding, open(save_dir + '/input_decoding.json', 'w'))
     json.dump(output_encoding, open(save_dir + '/output_encoding.json', 'w'))
     json.dump(output_decoding, open(save_dir + '/output_decoding.json', 'w'))
     model.save_weights(save_dir + '/model_weight.h5')
+    with open(save_dir + '/model.json', 'w') as f:
+        f.write(model.to_json())
 
 def create_keras_model(
         input_dict_size,
