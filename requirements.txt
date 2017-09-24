@@ -3,6 +3,8 @@ pandas
 numpy
 h5py
 tensorflow
+matplotlib
+seaborn
 # ===== hosting demo on heroku =====
 gunicorn
 flask

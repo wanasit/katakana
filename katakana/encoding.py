@@ -4,11 +4,15 @@ CHAR_CODE_START = 1
 CHAR_CODE_PADDING = 0
 
 
-def build_characters_encoding(titles):
+def build_characters_encoding(names):
+    """
+    :param names: list of strings
+    :return: (encoding, decoding, count)
+    """
     count = 2
     encoding = {}
     decoding = {1: 'START'}
-    for c in set([c for title in titles for c in title]):
+    for c in set([c for name in names for c in name]):
         encoding[c] = count
         decoding[count] = c
         count += 1
