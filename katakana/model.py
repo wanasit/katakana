@@ -66,7 +66,7 @@ def create_keras_model(
     decoder = TimeDistributed(Dense(output_dict_size, activation="softmax"))(decoder)
 
     model = Model(inputs=[encoder_input, decoder_input], outputs=[decoder])
-    model.compile(optimizer='adam', loss='binary_crossentropy')
+    model.compile(optimizer='adam', loss='categorical_crossentropy')
 
     return model
 
