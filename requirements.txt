@@ -1,10 +1,7 @@
-keras
 pandas
 numpy
 h5py
 tensorflow
+requests
 matplotlib
 seaborn
-# ===== hosting demo on heroku =====
-gunicorn
-flask

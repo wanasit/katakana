@@ -3,6 +3,8 @@ import numpy as np
 CHAR_CODE_START = 1
 CHAR_CODE_PADDING = 0
 
+DEFAULT_VECTOR_LENGTH = 20
+
 
 def build_characters_encoding(names):
     """
@@ -25,7 +27,7 @@ def transform(encoding, data, vector_size=20):
     :param data: list of strings
     :param vector_size: size of each encoded vector
     """
-    transformed_data = np.zeros(shape=(len(data), vector_size))
+    transformed_data = np.zeros(shape=(len(data), vector_size), dtype='int')
     for i in range(len(data)):
         for j in range(min(len(data[i]), vector_size)):
             transformed_data[i][j] = encoding[data[i][j]]

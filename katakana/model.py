@@ -3,15 +3,16 @@ import os
 import shutil
 
 import numpy as np
-from keras.layers import Input, Embedding, LSTM, TimeDistributed, Dense
-from keras.models import Model
+from tensorflow._api.v1.keras.layers import Input, Embedding, LSTM, TimeDistributed, Dense
+from tensorflow._api.v1.keras.models import Model, load_model
 
-import encoding
+from . import encoding
+
+DEFAULT_INPUT_LENGTH = encoding.DEFAULT_VECTOR_LENGTH
+DEFAULT_OUTPUT_LENGTH = encoding.DEFAULT_VECTOR_LENGTH
 
 
-def load(save_dir='trained_models',
-         input_length=20,
-         output_length=20):
+def load(save_dir='trained_models'):
 
     input_encoding = json.load(open(save_dir + '/input_encoding.json'))
     input_decoding = json.load(open(save_dir + '/input_decoding.json'))
@@ -21,16 +22,7 @@ def load(save_dir='trained_models',
     output_decoding = json.load(open(save_dir + '/output_decoding.json'))
     output_decoding = {int(k): v for k, v in output_decoding.items()}
 
-    output_dict_size = len(output_decoding) + 1
-    input_dict_size = len(input_decoding) + 1
-
-    model = create_keras_model(
-        input_dict_size=input_dict_size,
-        output_dict_size=output_dict_size,
-        input_length=input_length,
-        output_length=output_length)
-
-    model.load_weights(save_dir + '/model_weight.h5')
+    model = load_model(save_dir + '/model.h5')
     return model, input_encoding, input_decoding, output_encoding, output_decoding
 
 
@@ -41,19 +33,27 @@ def save(model, input_encoding, input_decoding, output_encoding, output_decoding
         shutil.rmtree(save_dir)
 
     os.mkdir(save_dir)
-    json.dump(input_encoding, open(save_dir + '/input_encoding.json', 'w'))
-    json.dump(input_decoding, open(save_dir + '/input_decoding.json', 'w'))
-    json.dump(output_encoding, open(save_dir + '/output_encoding.json', 'w'))
-    json.dump(output_decoding, open(save_dir + '/output_decoding.json', 'w'))
-    model.save_weights(save_dir + '/model_weight.h5')
-    with open(save_dir + '/model.json', 'w') as f:
-        f.write(model.to_json())
 
-def create_keras_model(
+    with open(save_dir + '/input_encoding.json', 'w') as f:
+        json.dump(input_encoding, f)
+
+    with open(save_dir + '/input_decoding.json', 'w') as f:
+        json.dump(input_decoding, f)
+
+    with open(save_dir + '/output_encoding.json', 'w') as f:
+        json.dump(output_encoding, f)
+
+    with open(save_dir + '/output_decoding.json', 'w') as f:
+        json.dump(output_decoding, f)
+
+    model.save(save_dir + '/model.h5')
+
+
+def create_model(
         input_dict_size,
         output_dict_size,
-        input_length=20,
-        output_length=20):
+        input_length=DEFAULT_INPUT_LENGTH,
+        output_length=DEFAULT_OUTPUT_LENGTH):
 
     encoder_input = Input(shape=(input_length,))
     decoder_input = Input(shape=(output_length,))
@@ -70,18 +70,34 @@ def create_keras_model(
 
     return model
 
+
+def create_model_data(
+        encoded_input,
+        encoded_output,
+        output_dict_size):
+
+    encoder_input = encoded_input
+
+    decoder_input = np.zeros_like(encoded_output)
+    decoder_input[:, 1:] = encoded_output[:, :-1]
+    decoder_input[:, 0] = encoding.CHAR_CODE_START
+
+    decoder_output = np.eye(output_dict_size)[encoded_output.astype('int')]
+
+    return encoder_input, decoder_input, decoder_output
+
 # =====================================================================
 
 
-def to_katakana(text, keras_model, input_encoding, output_decoding,
-                input_length=20,
-                output_length=20):
+def to_katakana(text, model, input_encoding, output_decoding,
+                input_length=DEFAULT_INPUT_LENGTH,
+                output_length=DEFAULT_OUTPUT_LENGTH):
 
     encoder_input = encoding.transform(input_encoding, [text.lower()], input_length)
     decoder_input = np.zeros(shape=(len(encoder_input), output_length))
     decoder_input[:, 0] = encoding.CHAR_CODE_START
     for i in range(1, output_length):
-        output = keras_model.predict([encoder_input, decoder_input]).argmax(axis=2)
+        output = model.predict([encoder_input, decoder_input]).argmax(axis=2)
         decoder_input[:, i] = output[:, i]
 
     decoder_output = decoder_input

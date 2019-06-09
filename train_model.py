@@ -13,16 +13,17 @@ MAX_KATAKANA_OUTPUT_LENGTH = 20
 data = pd.read_csv('./data/joined_titles.csv', header=None)
 data = data.sample(frac=1, random_state=0)
 
-data_input = [s.decode('utf-8').lower() for s in data[0]]
-data_output = [s.decode('utf-8') for s in data[1]]
+data_input = [s.lower() for s in data[0]]
+data_output = [s.lower() for s in data[1]]
 
 data_size = len(data)
 
-training_input  = data_input[data_size*0/100:data_size*90/100]
-training_output = data_output[data_size*0/100:data_size*90/100]
+train_split_index = int(data_size*90/100)
 
-validation_input = data_input[data_size*90/100:data_size*100/100]
-validation_output = data_output[data_size*90/100:data_size*100/100]
+training_input  = data_input[:train_split_index]
+training_output = data_output[:train_split_index]
+validation_input = data_input[train_split_index:]
+validation_output = data_output[train_split_index:]
 
 # Encoding the data ----------------------
 
@@ -36,38 +37,31 @@ encoded_validation_output = encoding.transform(output_encoding, validation_outpu
 
 # Building the model ----------------------
 
-training_encoder_input = encoded_training_input
+training_encoder_input, training_decoder_input, training_decoder_output = \
+    model.create_model_data(encoded_training_input, encoded_training_output, output_dict_size)
 
-training_decoder_input = np.zeros_like(encoded_training_output)
-training_decoder_input[:, 1:] = encoded_training_output[:,:-1]
-training_decoder_input[:, 0] = encoding.CHAR_CODE_START
-training_decoder_output = np.eye(output_dict_size)[encoded_training_output.astype('int')]
-
-validation_encoder_input = encoded_validation_input
-validation_decoder_input = np.zeros_like(encoded_validation_output)
-validation_decoder_input[:, 1:] = encoded_validation_output[:,:-1]
-validation_decoder_input[:, 0] = encoding.CHAR_CODE_START
-validation_decoder_output = np.eye(output_dict_size)[encoded_validation_output.astype('int')]
+validation_encoder_input, validation_decoder_input, validation_decoder_output = \
+    model.create_model_data(encoded_validation_input, encoded_validation_output, output_dict_size)
 
 # Building the model ----------------------
 
-keras_model = model.create_keras_model(
+seq2seq_model = model.create_model(
     input_dict_size=input_dict_size,
     output_dict_size=output_dict_size,
     input_length=MAX_ENGLISH_INPUT_LENGTH,
     output_length=MAX_KATAKANA_OUTPUT_LENGTH)
 
-keras_model.fit(
+seq2seq_model.fit(
     x=[training_encoder_input, training_decoder_input],
     y=[training_decoder_output],
     validation_data=(
         [validation_encoder_input, validation_decoder_input], [validation_decoder_output]),
     verbose=2,
     batch_size=64,
-    epochs=100)
+    epochs=30)
 
 model.save(
-    model=keras_model,
+    model=seq2seq_model,
     input_encoding=input_encoding,
     input_decoding=input_decoding,
     output_encoding=output_encoding,
