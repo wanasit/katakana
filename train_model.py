@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import numpy as np
 import pandas as pd
 
 from katakana import model, encoding
@@ -10,7 +9,7 @@ MAX_KATAKANA_OUTPUT_LENGTH = 20
 
 # Load and shuffle  ----------------------
 
-data = pd.read_csv('./data/joined_titles.csv', header=None)
+data = pd.read_csv('./dataset/data.csv')
 data = data.sample(frac=1, random_state=0)
 
 data_input = [s.lower() for s in data[0]]
@@ -25,7 +24,7 @@ training_output = data_output[:train_split_index]
 validation_input = data_input[train_split_index:]
 validation_output = data_output[train_split_index:]
 
-# Encoding the data ----------------------
+# Encoding the dataset ----------------------
 
 input_encoding, input_decoding, input_dict_size = encoding.build_characters_encoding(data_input)
 output_encoding, output_decoding, output_dict_size = encoding.build_characters_encoding(data_output)

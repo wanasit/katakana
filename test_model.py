@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import pandas as pd
+
 from katakana import model, encoding
 
 # ===============================================================
@@ -11,9 +12,9 @@ testing_model, input_encoding, input_decoding, output_encoding, output_decoding 
 
 # ===============================================================
 
-print('Evaluating the model on random testing data...')
+print('Evaluating the model on random testing dataset...')
 
-data = pd.read_csv('./data/joined_titles.csv', header=None)
+data = pd.read_csv('./dataset/data.csv')
 data = data.sample(frac=1, random_state=11)
 
 data_input = [s.lower() for s in data[0]]
