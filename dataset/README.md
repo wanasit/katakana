@@ -2,6 +2,12 @@
 
 An English-Katakana names dataset aggregated from Wikipedia's article titles.
 
+|English| Katakana  |
+|---|---|
+|Harry Potter|ハリー・ポッターシリーズ|
+|Hobbit|ホビット|
+|Python|パイソン|
+|...|...| 
 
 ### How to build the dataset
 
