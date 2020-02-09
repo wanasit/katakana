@@ -1,13 +1,13 @@
 # Katakana
 
-English to Katakana using Sequence-to-Sequence learning in Keras.
+English to Katakana using a Sequence-to-Sequence model.
 
 To learn more about how to train the model, checkout these resources:
 
-* [English to Katakana using Sequence to Sequence in Keras](https://wanasit.github.io/english-to-katakana-using-sequence-to-sequence-in-keras.html)
-* [Python Notebook](https://github.com/wanasit/katakana/blob/master/notebooks/Writing%20Katakana%20using%20Sequence-to-Sequence%20in%20Keras.ipynb)
+* [English to Katakana using Sequence to Sequence in Tensorflow](https://medium.com/@wanasit/english-to-katakana-with-sequence-to-sequence-in-tensorflow-a03a16ac19be)
+* [English to Katakana using Sequence to Sequence in Pytorch](https://medium.com/@wanasit/english-to-katakana-with-sequence-to-sequence-in-pytorch-24f18ab19296)
 
-The English-Katakana dataset used for training the model is also available [here](https://raw.githubusercontent.com/wanasit/katakana/master/data/joined_titles.csv)
+Please also feel free to download the English-Katakana dataset to train you own models [here](https://raw.githubusercontent.com/wanasit/katakana/master/dataset/data.csv)
 
 ## Use pre-trained model as a library
 
